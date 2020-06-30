@@ -1,18 +1,6 @@
 import * as djs from 'discord.js'
-import { Command } from './helpers'
+import { Command, getMembersWithRole } from './helpers'
 import { Config } from './configs'
-
-type InactiveDays = 7 | 14
-
-class GreeterLeniency {
-  greeter: djs.GuildMember
-  limit: InactiveDays
-
-  constructor(g: djs.GuildMember, l: InactiveDays) {
-    this.greeter = g
-    this.limit = l
-  }
-}
 
 export async function runCheck(params: string[], msg: djs.Message, cmd: Command, config: Config) {
 
@@ -20,12 +8,6 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
 
   await msg.guild.members.fetch()
   await msg.guild.roles.fetch()
-
-  // Remove warning role from all greeters
-  let toRem = getMembersWithRole(config.warningRole, msg.guild)
-  for (const g of toRem) {
-    g.roles.remove(config.warningRole)
-  }
 
   // Retrieve greeter channels
   let greeterChannels: djs.TextChannel[] = []
@@ -39,11 +21,9 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
       .then(c => c)
 
     // If unable to resolve, skip
-    if (chan === undefined) {
-      continue
+    if (chan !== undefined) {
+      greeterChannels.push(chan)
     }
-
-    greeterChannels.push(chan)
   }
   if (greeterChannels.length === 0) {
     msg.reply(`Unable to complete operation: no greeter channels were found`)
@@ -67,26 +47,14 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
   }
 
   // Subtract exceptions
-  let greetersToCheck = allGreeters.filter(g => !exceptedGreeters.includes(g))
-
-  // Get leniency data
-  let withLeniencies = greetersToCheck.map(g => new GreeterLeniency(g, g.roles.cache.has(config.leniencyRole) ? 14 : 7))
+  let greetersToCheck = allGreeters.filter(g => !exceptedGreeters.includes(g) && !g.roles.cache.has(config.leniencyRole))
 
   // TODO: Get 2 weeks of messages from all channels
   let msgs: djs.Message[] = []
 
 }
 
-function getMembersWithRole(id: string, guild: djs.Guild): djs.GuildMember[] {
-  let res: djs.GuildMember[] = []
-  for (const m of guild.roles.resolve(id).members) {
-    if (m) {
-      res.push(m[1])
-    }
-  }
-  return res
-}
-
-function getLastTwoWeeks(msg: djs.Message, channel: djs.TextChannel): djs.Message[] {
+//TODO
+function getLastWeekOfMessages(msg: djs.Message, channel: djs.TextChannel): djs.Message[] {
   return []
 }

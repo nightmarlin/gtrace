@@ -18,15 +18,9 @@ let commands: Command[] = [
     runCheck
   ),
   new Command(
-    [`exception`, `exceptions`],
-    `Adds or removes a user or role from the exceptions lists`,
-    `exception <add / remove> <user id / role id>`,
-    exceptionHandler
-  ),
-  new Command(
     [`leniency`, `external`],
     `Adds or removes a user or role from the external conditions leniency`,
-    `leniency <add / remove> <user id>`,
+    `leniency <add / remove / get> <user id>`,
     leniencyHandler
   ),
   new Command(
@@ -37,12 +31,6 @@ let commands: Command[] = [
       msg.reply(`> Pong!!`)
         .catch(err => console.error(`unable to send pong due to: ${err}`))
     }
-  ),
-  new Command(
-    [`report`, `getinfo`],
-    `Gets the currently cached reports`,
-    `report`,
-    getReports
   )
 ]
 
@@ -51,7 +39,7 @@ let commands: Command[] = [
  * the latter in the array will be chosen
  * @param msg the message that was sent
  */
-function messageHandler(msg: djs.Message): void {
+async function messageHandler(msg: djs.Message) {
   const config = Config.getInstance()
   initGetHelp(commands)
 
@@ -60,6 +48,15 @@ function messageHandler(msg: djs.Message): void {
     return;
   }
   console.log(`Handling message > ${msg.content}`);
+
+  // Check allowed usage
+  let author = msg.guild.members.resolve(msg.author.id)
+  author = await author.fetch()
+  if (!author.roles.cache.has(config.controlRole)) {
+    msg.reply(`You don't have permission to use this bot`)
+      .catch(err => console.error(`unable to send permission failure message due to: ${err}`))
+    return
+  }
 
   // Remove prefix and parameterise
   let withoutPrefix = msg.content.substring(config.prefix.length)

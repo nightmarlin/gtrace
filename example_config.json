@@ -1,8 +1,8 @@
 {
   "token": "TOKEN",
   "prefix": "gt!",
+  "controlRole": "MODMIN ROLE ID",
   "greeterRole": "ID",
-  "warningRole": "ID",
   "leniencyRole": "ID",
   "greeterChannels": [
     "ID"

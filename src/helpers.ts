@@ -49,6 +49,16 @@ export function checkMemberHasRoleIn(member: djs.GuildMember, roles: string[]): 
   return false
 }
 
+export function getMembersWithRole(id: string, guild: djs.Guild): djs.GuildMember[] {
+  let res: djs.GuildMember[] = []
+  for (const m of guild.roles.resolve(id).members) {
+    if (m) {
+      res.push(m[1])
+    }
+  }
+  return res
+}
+
 /**
  * Defines the role/user/inavlid result type
  */

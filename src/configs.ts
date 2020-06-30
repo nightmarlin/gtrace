@@ -5,7 +5,7 @@ export type UserOrRole = 'user' | 'role'
 // Config typings
 export class Config {
 
-  private static instance: Config
+  private static instance: Config = null
   static configPath: string = "../config.json"
 
   private constructor() { }
@@ -16,11 +16,11 @@ export class Config {
     Config.instance.token = c.token
     Config.instance.prefix = c.prefix
     Config.instance.greeterRole = c.greeterRole
-    Config.instance.warningRole = c.warningRole
     Config.instance.leniencyRole = c.leniencyRole
     Config.instance.greeterChannels = c.greeterChannels
     Config.instance.exceptionRoles = c.exceptionRoles
     Config.instance.exceptionUsers = c.exceptionUsers
+    Config.instance.controlRole = c.controlRole
 
   }
 
@@ -28,6 +28,7 @@ export class Config {
     if (!Config.instance) {
       Config.load()
     }
+    // console.log(Config.instance)
     return Config.instance
   }
 
@@ -40,13 +41,13 @@ export class Config {
    */
   prefix: string
   /**
+   * The bot management role
+   */
+  controlRole: string
+  /**
    * The greeter role id
    */
   greeterRole: string
-  /**
-   * The warning role id - added to greeters near the boundary
-   */
-  warningRole: string
   /**
    * The leniency role id - added to greeters we're making exceptions for
    */
@@ -63,31 +64,6 @@ export class Config {
    * A list of users the bot should override the checks on
    */
   exceptionUsers: string[]
-
-  /**
-   * Overwrites the current config file with the current stored config
-   */
-  writeConfigToFile() {
-    let cfgAsJson = JSON.stringify(this.getConfigSaveable)
-
-    fs.writeFile(Config.configPath, cfgAsJson, err => {
-      console.log(`unable to save config: ${err}`)
-    })
-  }
-
-  private getConfigSaveable(): ConfigSaveable {
-    return {
-      token: this.token,
-      prefix: this.prefix,
-      greeterRole: this.prefix,
-      warningRole: this.prefix,
-      leniencyRole: this.prefix,
-      greeterChannels: this.greeterChannels,
-      exceptionRoles: this.exceptionRoles,
-      exceptionUsers: this.exceptionUsers,
-    }
-  }
-
   /**
    * Removes an exception and saves saves the config to the file
    * @param id The id to remove
@@ -99,7 +75,6 @@ export class Config {
     } else if (this.exceptionRoles.includes(id)) {
       this.exceptionRoles.filter(rid => rid !== id)
     }
-    this.writeConfigToFile()
   }
 
   /**
@@ -113,16 +88,18 @@ export class Config {
     } else if (!this.exceptionRoles.includes(id)) {
       this.exceptionRoles.push(id)
     }
-    this.writeConfigToFile()
   }
 
 }
 
+/**
+ * Describes the shepe of the config file
+ */
 interface ConfigSaveable {
   token: string
   prefix: string
+  controlRole: string
   greeterRole: string
-  warningRole: string
   leniencyRole: string
   greeterChannels: string[]
   exceptionRoles: string[]
