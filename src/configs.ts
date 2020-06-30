@@ -12,7 +12,7 @@ export class Config {
 
   private static load() {
     Config.instance = new Config()
-    let c = require(Config.configPath)
+    let c: ConfigSaveable = require(Config.configPath)
     Config.instance.token = c.token
     Config.instance.prefix = c.prefix
     Config.instance.greeterRole = c.greeterRole
@@ -68,11 +68,24 @@ export class Config {
    * Overwrites the current config file with the current stored config
    */
   writeConfigToFile() {
-    let cfgAsJson = JSON.stringify(this)
+    let cfgAsJson = JSON.stringify(this.getConfigSaveable)
 
     fs.writeFile(Config.configPath, cfgAsJson, err => {
       console.log(`unable to save config: ${err}`)
     })
+  }
+
+  private getConfigSaveable(): ConfigSaveable {
+    return {
+      token: this.token,
+      prefix: this.prefix,
+      greeterRole: this.prefix,
+      warningRole: this.prefix,
+      leniencyRole: this.prefix,
+      greeterChannels: this.greeterChannels,
+      exceptionRoles: this.exceptionRoles,
+      exceptionUsers: this.exceptionUsers,
+    }
   }
 
   /**
@@ -102,4 +115,16 @@ export class Config {
     }
     this.writeConfigToFile()
   }
+
+}
+
+interface ConfigSaveable {
+  token: string
+  prefix: string
+  greeterRole: string
+  warningRole: string
+  leniencyRole: string
+  greeterChannels: string[]
+  exceptionRoles: string[]
+  exceptionUsers: string[]
 }

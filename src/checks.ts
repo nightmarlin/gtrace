@@ -87,4 +87,6 @@ function getMembersWithRole(id: string, guild: djs.Guild): djs.GuildMember[] {
   return res
 }
 
-function getTwoWeeks() { }
+function getLastTwoWeeks(msg: djs.Message, channel: djs.TextChannel): djs.Message[] {
+  return []
+}
