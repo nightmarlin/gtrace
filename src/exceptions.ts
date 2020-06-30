@@ -1,4 +1,4 @@
-import { AddRemoveUnion, getIfAddOrRemove, RoleUserUnion, getIfRoleOrUser, Command, sendBadRequestMessage } from './helpers'
+import { AddRemoveUnion, getIfAddOrRemove, RoleUserUnion, getIfRoleOrUser, Command, sendBadRequestMessage, addRole, removeRole } from './helpers'
 import { Config } from './configs'
 import * as djs from 'discord.js'
 

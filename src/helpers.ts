@@ -92,3 +92,33 @@ export function sendBadRequestMessage(msg: djs.Message, cmd: Command, n: Number)
   msg.reply(`${cmd.names[0]} takes ${n} parameters, usage: ${cmd.usage}`)
     .catch(err => console.log(`unable to reply: ${err}`))
 }
+
+/**
+ * Adds the role to the user if user does not already have the role
+ * @param uId User id to add role to
+ * @param rId Role id to add to user
+ * @param guild Guild to perform operation in
+ */
+export async function addRole(uId: string, rId: string, guild: djs.Guild) {
+  let r = guild.roles.resolve(rId)
+  let m = guild.members.resolve(uId)
+  if (r && m && !m.roles.cache.has(rId)) {
+    m.roles.add(r, 'Role granted for Greeter Tracing')
+    return
+  }
+}
+
+/**
+ * Removes the role from the user if user already has the role
+ * @param uId User id to remove role from
+ * @param rId Role id to remove from user
+ * @param guild Guild to perform operation in
+ */
+export async function removeRole(uId: string, rId: string, guild: djs.Guild) {
+  let r = guild.roles.resolve(rId)
+  let m = guild.members.resolve(uId)
+  if (r && m && m.roles.cache.has(rId)) {
+    m.roles.remove(r, 'Role removed for Greeter Tracing')
+    return
+  }
+}

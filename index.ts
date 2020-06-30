@@ -8,6 +8,7 @@ import { exceptionHandler } from './src/exceptions'
 import { initGetHelp } from './src/getHelp'
 import { Command } from './src/helpers'
 import { leniencyHandler } from './src/leniencies'
+import { getReports } from './src/reports'
 
 let commands: Command[] = [
   new Command(
@@ -24,7 +25,7 @@ let commands: Command[] = [
   ),
   new Command(
     [`leniency`, `external`],
-    `Adds or removes a user or role from the external conditions`,
+    `Adds or removes a user or role from the external conditions leniency`,
     `leniency <add / remove> <user id>`,
     leniencyHandler
   ),
@@ -36,6 +37,12 @@ let commands: Command[] = [
       msg.reply(`> Pong!!`)
         .catch(err => console.error(`unable to send pong due to: ${err}`))
     }
+  ),
+  new Command(
+    [`report`, `getinfo`],
+    `Gets the currently cached reports`,
+    `report`,
+    getReports
   )
 ]
 

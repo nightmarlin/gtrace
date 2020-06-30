@@ -21,6 +21,13 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
   await msg.guild.members.fetch()
   await msg.guild.roles.fetch()
 
+  // Remove warning role from all greeters
+  let toRem = getMembersWithRole(config.warningRole, msg.guild)
+  for (const g of toRem) {
+    g.roles.remove(config.warningRole)
+  }
+
+  // Retrieve greeter channels
   let greeterChannels: djs.TextChannel[] = []
   for (const cId of config.greeterChannels) {
     // Retrience
@@ -65,6 +72,9 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
   // Get leniency data
   let withLeniencies = greetersToCheck.map(g => new GreeterLeniency(g, g.roles.cache.has(config.leniencyRole) ? 14 : 7))
 
+  // TODO: Get 2 weeks of messages from all channels
+  let msgs: djs.Message[] = []
+
 }
 
 function getMembersWithRole(id: string, guild: djs.Guild): djs.GuildMember[] {
@@ -76,3 +86,5 @@ function getMembersWithRole(id: string, guild: djs.Guild): djs.GuildMember[] {
   }
   return res
 }
+
+function getTwoWeeks() { }
