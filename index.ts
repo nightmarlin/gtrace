@@ -9,8 +9,6 @@ import { initGetHelp } from './src/getHelp'
 import { Command } from './src/helpers'
 import { leniencyHandler } from './src/leniencies'
 
-const config = Config.getInstance()
-
 let commands: Command[] = [
   new Command(
     [`go`, `run`],
@@ -47,7 +45,7 @@ let commands: Command[] = [
  * @param msg the message that was sent
  */
 function messageHandler(msg: djs.Message): void {
-
+  const config = Config.getInstance()
   initGetHelp(commands)
 
   // Check prefix
@@ -81,14 +79,28 @@ function messageHandler(msg: djs.Message): void {
 }
 
 function main() {
+  const config = Config.getInstance()
 
+  // Connectify
   let client = new djs.Client({ ws: { intents: djs.Intents.ALL } });
   client.once('ready', () => {
-    console.log(`GTrace Ready!`);
+    console.log(`GTrace Ready!`)
+    console.log(`Invite me using 'https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=268635136'`)
+
+    let pd: djs.PresenceData = {
+      activity: {
+        name: 'at doing marlin\'s job for him',
+        type: 'PLAYING'
+      },
+      status: 'online'
+    }
+    client.user.setPresence(pd)
   })
+
   client.on('message', messageHandler)
 
   client.login(config.token)
+
 }
 
 main()

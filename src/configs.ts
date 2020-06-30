@@ -6,7 +6,7 @@ export type UserOrRole = 'user' | 'role'
 export class Config {
 
   private static instance: Config
-  static configPath: string = "./config"
+  static configPath: string = "../config.json"
 
   private constructor() { }
 
