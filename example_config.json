@@ -1,10 +1,10 @@
 {
-  "token": "TKN",
+  "token": "TOKEN",
+  "prefix": "gt!",
   "greeterRole": "ID",
   "warningRole": "ID",
   "leniencyRole": "ID",
   "greeterChannels": [
-    "ID",
     "ID"
   ],
   "exceptionRoles": [
