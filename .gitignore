@@ -1,2 +1,9 @@
+# Local config files
 config.json
+
+# Compiled JSON files
+*.js
+*.js.map
+
+# Node storage
 node_modules/

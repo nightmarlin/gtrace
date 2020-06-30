@@ -14,7 +14,8 @@
   },
   "scripts": {
     "start": "node index.js",
-    "watch": "tsc -p tsconfig.json -w"
+    "watch": "tsc -p tsconfig.json -w",
+    "build": "tsc -p tsconfig.json"
   },
   "devDependencies": {}
 }
