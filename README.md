@@ -4,9 +4,9 @@
 
 Keep an eye on those pesky Greeters and make sure they're up to scratch
 
-Set up a local version by setting `config.json` and then run `yarn run go` - It's that easy!!
+Set up a local version by setting `config.json` and then run `yarn && yarn run go` - It's that easy!!
 
-> If you don't have yarn, I recommend installing it - but NPM works fine too (`npm run go`)
+> If you don't have yarn, I recommend installing it - but NPM works fine too (`npm i && npm run go`)
 
 `https://discordapp.com/oauth2/authorize?client_id=CLIENT_ID&scope=bot&permissions=268504064`
 
