@@ -4,39 +4,45 @@ import { Config } from './configs'
 
 export async function onBreakHandler(params: string[], msg: djs.Message, cmd: Command, config: Config) {
 
+  // Check if get request
   if (params.length >= 2 && params[1] === 'get') {
 
     let msgTxt = ""
 
     if (params.length === 3 && getIfRoleOrUser(params[2], msg.guild) === `user`) {
+      // If user specified, get user break status
       let u = msg.guild.members.resolve(params[2])
-      msgTxt = `**${u.user.username}#${u.user.discriminator}** is ${u.roles.cache.has(config.onBreakRole) ? "" : "not"} currently on leniency`
+      msgTxt = `**${u.user.username}#${u.user.discriminator}** is ${u.roles.cache.has(config.onBreakRole) ? "" : "not"} currently on break`
     } else {
-      let leniencies = findLeniencies(msg, config).map(l => {
+      // Else get status of all users on break
+      let leniencies = findUsersOnBreak(msg, config).map(l => {
         return ` - **${l.user.username}#${l.user.discriminator}** (\`${l.id}\`)`
       }).join(`\n`)
-      msgTxt = `The following users are currently on leniency:\n\n${leniencies}`
+      msgTxt = `The following users are currently on break:\n\n${leniencies}`
     }
 
     msg.reply(msgTxt)
-
+      .catch(err => console.log(`unable to send break status message due to: ${err}`))
     return
   } else if (params.length !== 3 || getIfRoleOrUser(params[2], msg.guild) !== `user`) {
+    // Invalid params
     sendBadRequestMessage(msg, cmd, 2)
     return
   } else if (!config.shouldTryToEditRoles) {
-    msg.reply(`Adding and removing leniencies has been disabled - ` +
+    // Can't edit roles, so don't bother trying
+    msg.reply(`Adding and removing breaks has been disabled - ` +
       `try setting <@&${config.onBreakRole}> with another bot or doing it manually`)
-      .catch(err => console.error(`unable to send leniency management disabled message due to: ${err}`))
+      .catch(err => console.error(`unable to send break management disabled message due to: ${err}`))
     return
   }
 
   let id = params[2]
   let success: Boolean = false
 
+  // add or remove
   switch (params[1]) {
     case `add`:
-      success = await addLeniency(id, msg, config)
+      success = await addUserOnBreak(id, msg, config)
       if (success) {
         sendSuccess(msg, id)
       } else {
@@ -45,7 +51,7 @@ export async function onBreakHandler(params: string[], msg: djs.Message, cmd: Co
       break
 
     case `remove`:
-      success = await removeLeniency(id, msg, config)
+      success = await removeUserFromBreak(id, msg, config)
       if (success) {
         sendSuccess(msg, id)
       } else {
@@ -60,24 +66,24 @@ export async function onBreakHandler(params: string[], msg: djs.Message, cmd: Co
 
 }
 
-function findLeniencies(msg: djs.Message, config: Config): djs.GuildMember[] {
+function findUsersOnBreak(msg: djs.Message, config: Config): djs.GuildMember[] {
   return getMembersWithRole(config.onBreakRole, msg.guild)
 }
 
 function sendSuccess(msg: djs.Message, id: string) {
-  msg.reply(`Leniency updated for <@${id}> (\`${id}\`)!`)
-    .catch(err => console.error(`unable to send leniency change success message due to: ${err}`))
+  msg.reply(`Break status updated for <@${id}> (\`${id}\`)!`)
+    .catch(err => console.error(`unable to send break status change success message due to: ${err}`))
 }
 
 function sendFailure(msg: djs.Message, id: string) {
-  msg.reply(`Unable to update leniency for <@${id}> (\`${id}\`) :pensive:`)
-    .catch(err => console.error(`unable to send leniency change success message due to: ${err}`))
+  msg.reply(`Unable to update break status for <@${id}> (\`${id}\`) :pensive:`)
+    .catch(err => console.error(`unable to send break status change error message due to: ${err}`))
 }
 
-async function addLeniency(userId: string, msg: djs.Message, config: Config): Promise<Boolean> {
+async function addUserOnBreak(userId: string, msg: djs.Message, config: Config): Promise<Boolean> {
   return addRole(userId, config.onBreakRole, msg.guild)
 }
 
-async function removeLeniency(userId: string, msg: djs.Message, config: Config): Promise<Boolean> {
+async function removeUserFromBreak(userId: string, msg: djs.Message, config: Config): Promise<Boolean> {
   return removeRole(userId, config.onBreakRole, msg.guild)
 }

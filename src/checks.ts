@@ -54,6 +54,7 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
     }
   }
 
+  // Collect messages
   let msgs: djs.Message[] = []
   for (const chan of greeterChannels) {
     console.log(`getting last ${config.limitInDays} days of messages in #${chan.name} [this may take some time]`)
@@ -80,12 +81,14 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
   console.log(`generating report`)
   msg.channel.stopTyping()
   msg.reply(generateReport(outOfLimit, edgeOfLimit, greetersOnBreak, config))
+    .catch(err => console.log(`unable to send report due to: ${err}`))
 
 }
 
 function generateReport(outOfLimit: djs.GuildMember[], edgeOfLimit: djs.GuildMember[], onBreak: djs.GuildMember[], config: Config): string {
   let res = `**__Greeter Report - ${(new Date).toUTCString()}__**\n> *Using limit of ${config.limitInDays} days*\n\n`
 
+  // Only add blocks when needed
   res += outOfLimit.length > 0 ? genReportBlock(`Remove Greeter From`, arrToString(outOfLimit)) : ``
   res += edgeOfLimit.length > 0 ? genReportBlock(`Warn For Next Round`, arrToString(edgeOfLimit)) : ``
   res += onBreak.length > 0 ? genReportBlock(`Currently On Break`, arrToString(onBreak)) : ``
@@ -103,15 +106,15 @@ function arrToString(arr: djs.GuildMember[]): string {
 
 function genReportBlock(title: string, content: string): string {
   console.log(`generating '${title}' block`)
-
+  // Define 3-backticks for shorthanding
   let cb = '```'
-  return `${cb}md\n# ${title}\n${cb}\n${content}\n`
+
+  // create a md code block for the title and then populate the content
+  return `${cb}md\n# ${title}\n${cb}\n${content}\n\n`
 }
 
-//TODO
 async function getMessagesBeforeOldest(oldestMsg: djs.Message, channel: djs.TextChannel): Promise<djs.Message[]> {
   // console.log(`fetching messages older than ${oldestMsg.createdAt.toUTCString()}...`)
-
   let res = await channel.messages.fetch({ before: oldestMsg.id })
   return res.array()
 }
@@ -119,6 +122,7 @@ async function getMessagesBeforeOldest(oldestMsg: djs.Message, channel: djs.Text
 async function getLastWeekOfMessages(msg: djs.Message, channel: djs.TextChannel, config: Config): Promise<djs.Message[]> {
 
   let res: djs.Message[] = []
+  // Set limit
   let weekAgo: Date = new Date(Date.now() - (config.limitInDays * 24 * 60 * 60 * 1000))
 
   while (!res.some(m => m.createdAt < weekAgo)) {

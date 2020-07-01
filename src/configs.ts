@@ -2,7 +2,7 @@ import * as fs from 'fs'
 
 export type UserOrRole = 'user' | 'role'
 
-// Config typings
+// Config typings - singleton pattern
 export class Config {
 
   private static instance: Config = null
@@ -10,6 +10,7 @@ export class Config {
 
   private constructor() { }
 
+  // Safely load config file into program
   private static load() {
     Config.instance = new Config()
     let c: ConfigSaveable = require(Config.configPath)
@@ -104,7 +105,7 @@ export class Config {
 }
 
 /**
- * Describes the shepe of the config file
+ * Describes the shape of the config file
  */
 interface ConfigSaveable {
   token: string

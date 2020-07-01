@@ -41,8 +41,8 @@ export class Command {
 }
 
 export function checkMemberHasRoleIn(member: djs.GuildMember, roles: string[]): Boolean {
-  for (const r of member.roles.cache) {
-    if (roles.includes(r[0])) {
+  for (const r of roles) {
+    if (member.roles.cache.has(r)) {
       return true
     }
   }
@@ -51,9 +51,9 @@ export function checkMemberHasRoleIn(member: djs.GuildMember, roles: string[]): 
 
 export function getMembersWithRole(id: string, guild: djs.Guild): djs.GuildMember[] {
   let res: djs.GuildMember[] = []
-  for (const m of guild.roles.resolve(id).members) {
+  for (const m of guild.roles.resolve(id).members.array()) {
     if (m) {
-      res.push(m[1])
+      res.push(m)
     }
   }
   return res
@@ -63,6 +63,7 @@ export function getMembersWithRole(id: string, guild: djs.Guild): djs.GuildMembe
  * Defines the role/user/inavlid result type
  */
 export type RoleUserUnion = `role` | `user`
+
 /**
  * Checks if the id given is a valid user or role ID - retunrs undefined if neither
  * @param id The id to look up
@@ -112,7 +113,7 @@ export function sendBadRequestMessage(msg: djs.Message, cmd: Command, n: Number)
 export async function addRole(uId: string, rId: string, guild: djs.Guild): Promise<Boolean> {
   let r = guild.roles.resolve(rId)
   let m = guild.members.resolve(uId)
-  if (r && m && !m.roles.cache.has(rId)) {
+  if (r && m && !m.roles.cache.(rId)) {
     let res = m.roles.add(r, 'Role granted for Greeter Tracing')
       .then(_ => true)
       .catch(err => {

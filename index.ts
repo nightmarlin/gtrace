@@ -8,6 +8,7 @@ import { initGetHelp } from './src/getHelp'
 import { Command } from './src/helpers'
 import { onBreakHandler } from './src/breaks'
 
+// Init commands
 let commands: Command[] = [
   new Command(
     [`go`, `run`],
@@ -40,26 +41,31 @@ let commands: Command[] = [
 async function messageHandler(msg: djs.Message) {
   const config = Config.getInstance()
 
+  // Attach help message to commands (only once)
   if (!commands.some(c => c.names.includes(`help`))) {
     initGetHelp(commands)
   }
 
+  // If message mentions bot, respond with prefix
   if (msg.mentions.members.has(msg.client.user.id)) {
     let authorised = msg.guild.members.resolve(msg.author.id).roles.cache.has(config.controlRole)
     msg.reply(`Hi there! My prefix is \`${config.prefix}\`${
       authorised ? `` : ` - But you can't use me as you dont have my management role!`
       }`)
+      .catch(err => console.log(`unable to send prefix info message due to: ${err}`))
+    return
   }
 
   // Check prefix
   if (!msg.content.startsWith(config.prefix)) {
-    return;
+    return
   }
   console.log(`Handling message > ${msg.content}`);
 
-  // Checl if DM
+  // Check if DM
   if (msg.channel.type !== `text`) {
     msg.reply(`I can only be used in our mutual server... Try summoning me there!!`)
+      .catch(err => console.log(`unable to respond to dm from ${msg.author.username} (${msg.author.id}) due to: $err`))
     return
   }
 
@@ -97,6 +103,7 @@ async function messageHandler(msg: djs.Message) {
 }
 
 function main() {
+  // instantiate / load config
   const config = Config.getInstance()
 
   // Connectify
@@ -114,11 +121,13 @@ function main() {
       status: 'online'
     }
     client.user.setPresence(pd)
+      .catch(err => console.log(`unable to set presence due to: ${err}`))
   })
 
   client.on('message', messageHandler)
 
   client.login(config.token)
+    .catch(err => console.log(`unable to log in due to: ${err}`))
 
 }
 
