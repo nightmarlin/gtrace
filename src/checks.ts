@@ -19,7 +19,7 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
     // Cast to text channel and get missing properties
     let chan: djs.TextChannel = await (<djs.TextChannel>msg.guild.channels.resolve(cId)).fetch()
       .catch(err => {
-        console.error(`Unable to retrieve channel ${cId} due to: ${err}`)
+        console.error(`unable to retrieve channel ${cId} due to: ${err}`)
         return undefined
       })
       .then(c => c)
@@ -30,7 +30,7 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
     }
   }
   if (greeterChannels.length === 0) {
-    msg.reply(`Unable to complete operation: no greeter channels were found`)
+    msg.reply(`unable to complete operation: no greeter channels were found`)
       .catch(err => console.error(`unable to send greeter channel resolve error message due to: ${err}`))
     return
   }
@@ -95,7 +95,7 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
         if (m.content === `confirm`) {
           // Run followups
           console.log(`running follow-ups`)
-          m.reply(`Running follow-ups...`)
+          m.reply(`running follow-ups...`)
             .catch(err => console.error(`unable to send follow up confirmation message due to: ${err}`))
 
           let fui: FollowUpInfo = {
@@ -108,7 +108,7 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
         } else {
           // Dont run follow ups
           console.log(`not running follow ups`)
-          m.reply(`Follow-ups will not be run`)
+          m.reply(`follow-ups will not be run`)
             .catch(err => console.error(`unable to send follow up cancellation message due to: ${err}`))
         }
       })
@@ -117,19 +117,19 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
 }
 
 function generateReport(outOfLimit: djs.GuildMember[], edgeOfLimit: djs.GuildMember[], onBreak: djs.GuildMember[], config: Config): { text: string, followup: boolean } {
-  let res = `**__Greeter Report - ${(new Date).toUTCString()}__**\n> *Using limit of ${config.limitInDays} days*\n\n`
+  let res = `**__greeter report - ${(new Date).toUTCString()}__**\n> *using limit of ${config.limitInDays} days*\n\n`
 
   // Only add blocks when needed
-  res += outOfLimit.length ? genReportBlock(`Remove Greeter From`, arrToString(outOfLimit)) : ``
-  res += edgeOfLimit.length ? genReportBlock(`Warn For Next Round`, arrToString(edgeOfLimit)) : ``
-  res += onBreak.length ? genReportBlock(`Currently On Break`, arrToString(onBreak)) : ``
+  res += outOfLimit.length ? genReportBlock(`remove greeter from`, arrToString(outOfLimit)) : ``
+  res += edgeOfLimit.length ? genReportBlock(`warn for next round`, arrToString(edgeOfLimit)) : ``
+  res += onBreak.length ? genReportBlock(`currently on break`, arrToString(onBreak)) : ``
 
   res += (!(outOfLimit.length) && !(edgeOfLimit.length) && !(onBreak.length))
-    ? `No greeters should be removed or warned. No greeters are on break\n`
+    ? `no greeters should be removed or warned. no greeters are on break\n`
     : ``
 
   res += outOfLimit.length || edgeOfLimit.length
-    ? `If you'd like me to automatically follow up on this report, send \`confirm\` in the next 30 seconds, any other messages will cancel a follow-up`
+    ? `if you'd like me to automatically follow up on this report, send \`confirm\` in the next 30 seconds, any other messages will cancel a follow-up`
     : ``
 
 

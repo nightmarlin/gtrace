@@ -6,9 +6,9 @@ import { Config } from './configs';
 class CmdData {
   value: string;
   constructor(names: string[], description: string, usage: string) {
-    this.value = `**Name(s):** ${names.join(` | `)}
-    **- Description:** ${description}
-    **- Usage:** ${usage}`
+    this.value = `**name(s):** ${names.join(` | `)}
+    **- description:** ${description}
+    **- usage:** ${usage}`
   }
 }
 
@@ -20,10 +20,10 @@ export function initGetHelp(commands: Command[]) {
     `help`,
     function (params: string[], msg: djs.Message, cmd: Command, config: Config) {
       // Header and config deets
-      let msgText = `***GTrace Help Page***\n> See the source at \`https://github.com/Nightmarlin/gtrace\`
-**Limit:** ${config.limitInDays} days | **Control Role:** <@&${config.controlRole}>
-**Greeter Role:** <@&${config.greeterRole}> | **On-Break Role:** <@&${config.onBreakRole}>
-**Should Manage Breaks:** ${config.shouldTryToEditRoles} | **Exceptions:** ${config.exceptionUsers.length} user(s), ${config.exceptionRoles.length} role(s)\n`
+      let msgText = `***gtrace help page***\n> see the source at \`https://github.com/Nightmarlin/gtrace\`
+**limit:** ${config.limitInDays} days | **control role:** <@&${config.controlRole}>
+**greeter role:** <@&${config.greeterRole}> | **on-break role:** <@&${config.onBreakRole}>
+**should manage breaks:** ${config.shouldTryToEditRoles} | **exceptions:** ${config.exceptionUsers.length} user(s), ${config.exceptionRoles.length} role(s)\n`
 
       // append cmd data to array
       let cmdData: string[] = commands.map(c => new CmdData(c.names, c.description, c.usage).value)

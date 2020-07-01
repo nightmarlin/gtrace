@@ -29,7 +29,7 @@ it's that easy!!
 | controlRole          | string   | id of role allowed to use bot                           |
 | greeterRole          | string   | id of role that identifies greeters                     |
 | onBreakRole          | string   | id of role the identifies greeters on break             |
-| greeterChannels      | string[] | array of IDs of channels to measure greeter activity in |
+| greeterChannels      | string[] | array of ids of channels to measure greeter activity in |
 | exceptionRoles       | string[] | array of roles to ignore in checks                      |
 | exceptionUsers       | string[] | array of users to ignore in checks                      |
 | limitInDays          | number   | the number of days to limit by - recommended: 7         |
@@ -101,7 +101,7 @@ in popular channels...
 **<sup>\[1\]</sup>:** if `manage roles` is denied, you should set `shouldTryToEditRoles` to
 `false` in the `config.json`
 
-**<sup>\[2\]</sup>:** The bot will only attempt to set roles if `shouldTryToEditRoles` is set
+**<sup>\[2\]</sup>:** the bot will only attempt to set roles if `shouldTryToEditRoles` is set
 to `true` in the `config.json`
 
 **<sup>\[3\]</sup>:** these are greeters whose last recorded activity is at most one day from

@@ -12,19 +12,19 @@ import { onBreakHandler } from './src/breaks'
 let commands: Command[] = [
   new Command(
     [`go`, `run`],
-    `Runs the greeter check. If greeters need to be removed or alerted, will prompt you to do so (this sends an alert dm and [where necessary] removes the greeter role)`,
+    `runs the greeter check. if greeters need to be removed or alerted, will prompt you to do so (this sends an alert dm and [where necessary] removes the greeter role)`,
     `go`,
     runCheck
   ),
   new Command(
     [`break`, `leniency`, `external`],
-    `Adds or removes a user's break status / get the current break status of a greeter or all greeters`,
+    `adds or removes a user's break status / get the current break status of a greeter or all greeters`,
     `break <add / remove / get> <user id [optional on get]>`,
     onBreakHandler
   ),
   new Command(
     [`ping`],
-    `Responds with 'pong'`,
+    `responds with 'pong'`,
     `ping`,
     function (params, msg, cmd, config) {
       msg.reply(`> Pong!!`)
@@ -49,8 +49,8 @@ async function messageHandler(msg: djs.Message) {
   // If message mentions bot, respond with prefix
   if (msg.mentions.members.has(msg.client.user.id)) {
     let authorised = msg.guild.members.resolve(msg.author.id).roles.cache.has(config.controlRole)
-    msg.reply(`Hi there! My prefix is \`${config.prefix}\`${
-      authorised ? `` : ` - But you can't use me as you dont have my management role!`
+    msg.reply(`hi there! my prefix is \`${config.prefix}\`${
+      authorised ? `` : ` - but you can't use me as you dont have my management role!`
       }`)
       .catch(err => console.log(`unable to send prefix info message due to: ${err}`))
     return
@@ -60,11 +60,11 @@ async function messageHandler(msg: djs.Message) {
   if (!msg.content.startsWith(config.prefix)) {
     return
   }
-  console.log(`Handling message > ${msg.content}`);
+  console.log(`handling message > ${msg.content}`);
 
   // Check if DM
   if (msg.channel.type !== `text`) {
-    msg.reply(`I can only be used in our mutual server... Try summoning me there!!`)
+    msg.reply(`i can only be used in our mutual server... try summoning me there!!`)
       .catch(err => console.log(`unable to respond to dm from ${msg.author.username} (${msg.author.id}) due to: $err`))
     return
   }
@@ -73,7 +73,7 @@ async function messageHandler(msg: djs.Message) {
   let author = msg.guild.members.resolve(msg.author.id)
   author = await author.fetch()
   if (!author.roles.cache.has(config.controlRole)) {
-    msg.reply(`You don't have permission to use this bot`)
+    msg.reply(`you don't have permission to use this bot`)
       .catch(err => console.error(`unable to send permission failure message due to: ${err}`))
     return
   }
@@ -109,8 +109,8 @@ function main() {
   // Connectify
   let client = new djs.Client({ ws: { intents: djs.Intents.ALL } });
   client.once('ready', () => {
-    console.log(`GTrace Ready!`)
-    console.log(`Invite me using 'https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=268504064'`)
+    console.log(`gtrace Ready!`)
+    console.log(`invite me using 'https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=268504064'`)
 
     let pd: djs.PresenceData = {
       activity: {

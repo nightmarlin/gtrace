@@ -48,16 +48,16 @@ async function runAlert(g: djs.GuildMember, refDate: Date, config: Config) {
  * @param config The config object
  */
 function generateText(g: djs.GuildMember, removeOrAlert: Boolean, refDate: Date, config: Config): string {
-  let res = `Hello ${g.user.username}!
-Your last greet in **${g.guild.name}** was ${removeOrAlert ? `before` : `just after`} ${refDate.getFullYear()}-${refDate.getMonth()}-${refDate.getDate()}\n`
+  let res = `hello ${g.user.username}!
+your last greet in **${g.guild.name}** was ${removeOrAlert ? `before` : `just after`} ${refDate.getFullYear()}-${refDate.getMonth()}-${refDate.getDate()}\n`
 
   if (removeOrAlert) {
-    res += `As such, we have removed the role from you, but feel free to ask for it back if you feel you'll be more active!\n`
+    res += `as such, we have removed the role from you, but feel free to ask for it back if you feel you'll be more active!\n`
   } else {
-    res += `As this is on the edge of the ${config.limitInDays} day limit, the role has not been removed. Just consider this to be a head's up!!\n`
+    res += `as this is on the edge of the ${config.limitInDays} day limit, the role has not been removed. just consider this to be a head's up!!\n`
   }
 
-  res += `> This was an automated message - if you have any questions please contact server staff!`
+  res += `> this was an automated message - if you have any questions please contact server staff!`
   return res
 }
 
@@ -79,7 +79,7 @@ export function runFollowUps(fui: FollowUpInfo, config: Config) {
   }
 
   fui.replyTo.channel.stopTyping()
-  fui.replyTo.reply(`Follow-ups complete!`)
+  fui.replyTo.reply(`follow-ups complete!`)
     .catch(err => console.log(`unable to send follow up completion message due to: ${err}`))
 
 }

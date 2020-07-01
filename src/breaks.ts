@@ -18,7 +18,7 @@ export async function onBreakHandler(params: string[], msg: djs.Message, cmd: Co
       let leniencies = findUsersOnBreak(msg, config).map(l => {
         return ` - **${l.user.username}#${l.user.discriminator}** (\`${l.id}\`)`
       }).join(`\n`)
-      msgTxt = `The following users are currently on break:\n\n${leniencies}`
+      msgTxt = `the following users are currently on break:\n\n${leniencies}`
     }
 
     msg.reply(msgTxt)
@@ -30,8 +30,8 @@ export async function onBreakHandler(params: string[], msg: djs.Message, cmd: Co
     return
   } else if (!config.shouldTryToEditRoles) {
     // Can't edit roles, so don't bother trying
-    msg.reply(`Adding and removing breaks has been disabled - ` +
-      `try setting <@&${config.onBreakRole}> with another bot or doing it manually`)
+    msg.reply(`adding and removing breaks has been disabled - ` +
+      `try setting <@&${config.onBreakRole}> with another bot or doing it manually`, { allowedMentions: { parse: ['users'] } })
       .catch(err => console.error(`unable to send break management disabled message due to: ${err}`))
     return
   }
@@ -71,12 +71,12 @@ function findUsersOnBreak(msg: djs.Message, config: Config): djs.GuildMember[] {
 }
 
 function sendSuccess(msg: djs.Message, id: string) {
-  msg.reply(`Break status updated for <@${id}> (\`${id}\`)!`)
+  msg.reply(`break status updated for <@${id}> (\`${id}\`)!`)
     .catch(err => console.error(`unable to send break status change success message due to: ${err}`))
 }
 
 function sendFailure(msg: djs.Message, id: string) {
-  msg.reply(`Unable to update break status for <@${id}> (\`${id}\`) :pensive:`)
+  msg.reply(`unable to update break status for <@${id}> (\`${id}\`) :pensive:`)
     .catch(err => console.error(`unable to send break status change error message due to: ${err}`))
 }
 

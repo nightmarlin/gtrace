@@ -114,7 +114,7 @@ export async function addRole(uId: string, rId: string, guild: djs.Guild): Promi
   let r = guild.roles.resolve(rId)
   let m = guild.members.resolve(uId)
   if (r && m && !m.roles.cache.has(rId)) {
-    let res = m.roles.add(r, 'Role granted for Greeter Tracing')
+    let res = m.roles.add(r, 'role granted for greeter tracing')
       .then(_ => true)
       .catch(err => {
         console.log(`unable to add role ${r.name} to user ${m.user.username} due to ${err}`)
@@ -135,7 +135,7 @@ export async function removeRole(uId: string, rId: string, guild: djs.Guild): Pr
   let r = guild.roles.resolve(rId)
   let m = guild.members.resolve(uId)
   if (r && m && m.roles.cache.has(rId)) {
-    let res = m.roles.remove(r, 'Role removed for Greeter Tracing')
+    let res = m.roles.remove(r, 'role removed for greeter tracing')
       .then(_ => true)
       .catch(err => {
         console.log(`unable to remove role ${r.name} from user ${m.user.username} due to ${err}`)
