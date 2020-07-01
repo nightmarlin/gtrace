@@ -21,6 +21,8 @@ export class Config {
     Config.instance.exceptionRoles = c.exceptionRoles
     Config.instance.exceptionUsers = c.exceptionUsers
     Config.instance.controlRole = c.controlRole
+    Config.instance.limitInDays = c.limitInDays
+    Config.instance.shouldTryToEditRoles = c.shouldTryToEditRoles
 
   }
 
@@ -65,6 +67,15 @@ export class Config {
    */
   exceptionUsers: string[]
   /**
+   * How many days should be parsed before declared inactive
+   */
+  limitInDays: number
+  /**
+   * Whether the bot should attempt to edit roles itself (for leniencies)
+   */
+  shouldTryToEditRoles: boolean
+
+  /**
    * Removes an exception and saves saves the config to the file
    * @param id The id to remove
    * @param which Whether the id is that of a user or role
@@ -104,4 +115,6 @@ interface ConfigSaveable {
   greeterChannels: string[]
   exceptionRoles: string[]
   exceptionUsers: string[]
+  limitInDays: number
+  shouldTryToEditRoles: boolean
 }

@@ -4,11 +4,9 @@ import * as djs from 'discord.js'
 // My own imports
 import { runCheck } from './src/checks'
 import { Config } from './src/configs'
-import { exceptionHandler } from './src/exceptions'
 import { initGetHelp } from './src/getHelp'
 import { Command } from './src/helpers'
 import { leniencyHandler } from './src/leniencies'
-import { getReports } from './src/reports'
 
 let commands: Command[] = [
   new Command(
@@ -20,7 +18,7 @@ let commands: Command[] = [
   new Command(
     [`leniency`, `external`],
     `Adds or removes a user or role from the external conditions leniency`,
-    `leniency <add / remove / get> <user id>`,
+    `leniency <add / remove / get> <user id [optional on get]>`,
     leniencyHandler
   ),
   new Command(
@@ -41,13 +39,29 @@ let commands: Command[] = [
  */
 async function messageHandler(msg: djs.Message) {
   const config = Config.getInstance()
-  initGetHelp(commands)
+
+  if (!commands.some(c => c.names.includes(`help`))) {
+    initGetHelp(commands)
+  }
+
+  if (msg.mentions.members.has(msg.client.user.id)) {
+    let authorised = msg.guild.members.resolve(msg.author.id).roles.cache.has(config.controlRole)
+    msg.reply(`Hi there! My prefix is \`${config.prefix}\`${
+      authorised ? `` : ` - But you can't use me as you dont have my management role!`
+      }`)
+  }
 
   // Check prefix
   if (!msg.content.startsWith(config.prefix)) {
     return;
   }
   console.log(`Handling message > ${msg.content}`);
+
+  // Checl if DM
+  if (msg.channel.type !== `text`) {
+    msg.reply(`I can only be used in our mutual server... Try summoning me there!!`)
+    return
+  }
 
   // Check allowed usage
   let author = msg.guild.members.resolve(msg.author.id)
@@ -89,12 +103,13 @@ function main() {
   let client = new djs.Client({ ws: { intents: djs.Intents.ALL } });
   client.once('ready', () => {
     console.log(`GTrace Ready!`)
-    console.log(`Invite me using 'https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=268635136'`)
+    console.log(`Invite me using 'https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=268504064'`)
 
     let pd: djs.PresenceData = {
       activity: {
-        name: 'at doing marlin\'s job for him',
-        type: 'PLAYING'
+        name: 'the greeter team!',
+        type: 'WATCHING',
+        url: 'https://github.com/Nightmarlin/gtrace'
       },
       status: 'online'
     }

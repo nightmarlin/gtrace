@@ -12,5 +12,7 @@
   ],
   "exceptionUsers": [
     "ID"
-  ]
+  ],
+  "limitInDays": 7,
+  "shouldTryToEditRoles": true
 }

@@ -42,7 +42,7 @@ export class Command {
 
 export function checkMemberHasRoleIn(member: djs.GuildMember, roles: string[]): Boolean {
   for (const r of member.roles.cache) {
-    if (roles.includes[r[0]]) {
+    if (roles.includes(r[0])) {
       return true
     }
   }
@@ -100,7 +100,7 @@ export function getIfAddOrRemove(toCheck: string): AddRemoveUnion {
  */
 export function sendBadRequestMessage(msg: djs.Message, cmd: Command, n: Number) {
   msg.reply(`${cmd.names[0]} takes ${n} parameters, usage: ${cmd.usage}`)
-    .catch(err => console.log(`unable to reply: ${err}`))
+    .catch(err => console.log(`unable to send bad request message for ${cmd.names[0]} due to: ${err}`))
 }
 
 /**
@@ -109,13 +109,19 @@ export function sendBadRequestMessage(msg: djs.Message, cmd: Command, n: Number)
  * @param rId Role id to add to user
  * @param guild Guild to perform operation in
  */
-export async function addRole(uId: string, rId: string, guild: djs.Guild) {
+export async function addRole(uId: string, rId: string, guild: djs.Guild): Promise<Boolean> {
   let r = guild.roles.resolve(rId)
   let m = guild.members.resolve(uId)
   if (r && m && !m.roles.cache.has(rId)) {
-    m.roles.add(r, 'Role granted for Greeter Tracing')
-    return
+    let res = m.roles.add(r, 'Role granted for Greeter Tracing')
+      .then(_ => true)
+      .catch(err => {
+        console.log(`unable to add role ${r.name} to user ${m.user.username} due to ${err}`)
+        return false
+      })
+    return res
   }
+  return false
 }
 
 /**
@@ -124,11 +130,17 @@ export async function addRole(uId: string, rId: string, guild: djs.Guild) {
  * @param rId Role id to remove from user
  * @param guild Guild to perform operation in
  */
-export async function removeRole(uId: string, rId: string, guild: djs.Guild) {
+export async function removeRole(uId: string, rId: string, guild: djs.Guild): Promise<Boolean> {
   let r = guild.roles.resolve(rId)
   let m = guild.members.resolve(uId)
   if (r && m && m.roles.cache.has(rId)) {
-    m.roles.remove(r, 'Role removed for Greeter Tracing')
-    return
+    let res = m.roles.remove(r, 'Role removed for Greeter Tracing')
+      .then(_ => true)
+      .catch(err => {
+        console.log(`unable to remove role ${r.name} from user ${m.user.username} due to ${err}`)
+        return false
+      })
+    return res
   }
+  return false;
 }
