@@ -20,9 +20,9 @@ export function initGetHelp(commands: Command[]) {
 
     function (params: string[], msg: djs.Message, cmd: Command, config: Config) {
       let msgText = `***GTrace Help Page***\n> See the source at \`https://github.com/Nightmarlin/gtrace\`
-      **Limit:** ${config.limitInDays} days | **Control Role:** <@&${config.controlRole}>
-      **Greeter Role:** <@&${config.greeterRole}> | **On-Break Role:** <@&${config.onBreakRole}>
-      **Should Manage Breaks:** ${config.shouldTryToEditRoles} | **Exceptions:** ${config.exceptionUsers.length} user(s), ${config.exceptionRoles.length} role(s)\n`
+**Limit:** ${config.limitInDays} days | **Control Role:** <@&${config.controlRole}>
+**Greeter Role:** <@&${config.greeterRole}> | **On-Break Role:** <@&${config.onBreakRole}>
+**Should Manage Breaks:** ${config.shouldTryToEditRoles} | **Exceptions:** ${config.exceptionUsers.length} user(s), ${config.exceptionRoles.length} role(s)\n`
 
       let cmdData: string[] = commands.map(c => new CmdData(c.names, c.description, c.usage).value)
 
