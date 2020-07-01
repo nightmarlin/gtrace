@@ -113,7 +113,7 @@ export function sendBadRequestMessage(msg: djs.Message, cmd: Command, n: Number)
 export async function addRole(uId: string, rId: string, guild: djs.Guild): Promise<Boolean> {
   let r = guild.roles.resolve(rId)
   let m = guild.members.resolve(uId)
-  if (r && m && !m.roles.cache.(rId)) {
+  if (r && m && !m.roles.cache.has(rId)) {
     let res = m.roles.add(r, 'Role granted for Greeter Tracing')
       .then(_ => true)
       .catch(err => {
