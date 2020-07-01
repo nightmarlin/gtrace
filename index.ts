@@ -12,7 +12,7 @@ import { onBreakHandler } from './src/breaks'
 let commands: Command[] = [
   new Command(
     [`go`, `run`],
-    `runs the greeter check`,
+    `Runs the greeter check. If greeters need to be removed or alerted, will prompt you to do so (this sends an alert dm and [where necessary] removes the greeter role)`,
     `go`,
     runCheck
   ),
