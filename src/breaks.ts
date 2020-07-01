@@ -2,7 +2,7 @@ import * as djs from 'discord.js'
 import { getIfRoleOrUser, Command, sendBadRequestMessage, addRole, removeRole, getMembersWithRole } from './helpers'
 import { Config } from './configs'
 
-export async function leniencyHandler(params: string[], msg: djs.Message, cmd: Command, config: Config) {
+export async function onBreakHandler(params: string[], msg: djs.Message, cmd: Command, config: Config) {
 
   if (params.length >= 2 && params[1] === 'get') {
 
@@ -10,7 +10,7 @@ export async function leniencyHandler(params: string[], msg: djs.Message, cmd: C
 
     if (params.length === 3 && getIfRoleOrUser(params[2], msg.guild) === `user`) {
       let u = msg.guild.members.resolve(params[2])
-      msgTxt = `**${u.user.username}#${u.user.discriminator}** is ${u.roles.cache.has(config.leniencyRole) ? "" : "not"} currently on leniency`
+      msgTxt = `**${u.user.username}#${u.user.discriminator}** is ${u.roles.cache.has(config.onBreakRole) ? "" : "not"} currently on leniency`
     } else {
       let leniencies = findLeniencies(msg, config).map(l => {
         return ` - **${l.user.username}#${l.user.discriminator}** (\`${l.id}\`)`
@@ -26,7 +26,7 @@ export async function leniencyHandler(params: string[], msg: djs.Message, cmd: C
     return
   } else if (!config.shouldTryToEditRoles) {
     msg.reply(`Adding and removing leniencies has been disabled - ` +
-      `try setting <@&${config.leniencyRole}> with another bot or doing it manually`)
+      `try setting <@&${config.onBreakRole}> with another bot or doing it manually`)
       .catch(err => console.error(`unable to send leniency management disabled message due to: ${err}`))
     return
   }
@@ -61,7 +61,7 @@ export async function leniencyHandler(params: string[], msg: djs.Message, cmd: C
 }
 
 function findLeniencies(msg: djs.Message, config: Config): djs.GuildMember[] {
-  return getMembersWithRole(config.leniencyRole, msg.guild)
+  return getMembersWithRole(config.onBreakRole, msg.guild)
 }
 
 function sendSuccess(msg: djs.Message, id: string) {
@@ -75,9 +75,9 @@ function sendFailure(msg: djs.Message, id: string) {
 }
 
 async function addLeniency(userId: string, msg: djs.Message, config: Config): Promise<Boolean> {
-  return addRole(userId, config.leniencyRole, msg.guild)
+  return addRole(userId, config.onBreakRole, msg.guild)
 }
 
 async function removeLeniency(userId: string, msg: djs.Message, config: Config): Promise<Boolean> {
-  return removeRole(userId, config.leniencyRole, msg.guild)
+  return removeRole(userId, config.onBreakRole, msg.guild)
 }

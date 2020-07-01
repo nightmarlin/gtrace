@@ -18,16 +18,19 @@ export function initGetHelp(commands: Command[]) {
     `gets help`,
     `help`,
 
-    function getHelp(params: string[], msg: djs.Message, cmd: Command, config: Config) {
-      let msgText = `***GTrace Help Page***`
+    function (params: string[], msg: djs.Message, cmd: Command, config: Config) {
+      let msgText = `***GTrace Help Page***\n> See the source at \`https://github.com/Nightmarlin/gtrace\`
+      **Limit:** ${config.limitInDays} days | **Control Role:** <@&${config.controlRole}>
+      **Greeter Role:** <@&${config.greeterRole}> | **On-Break Role:** <@&${config.onBreakRole}>
+      **Should Manage Breaks:** ${config.shouldTryToEditRoles} | **Exceptions:** ${config.exceptionUsers.length} user(s), ${config.exceptionRoles.length} role(s)\n`
 
-      let cmdData: CmdData[] = commands.map(c => new CmdData(c.names, c.description, c.usage))
+      let cmdData: string[] = commands.map(c => new CmdData(c.names, c.description, c.usage).value)
 
       for (const c of cmdData) {
-        msgText += `\n\n${c.value}`
+        msgText += `\n\n${c}`
       }
 
-      msg.reply(msgText)
+      msg.reply(msgText, { allowedMentions: { parse: ['users'] } })
         .catch(err => console.log(`unable to send help text due to: ${err}`))
     }
   )

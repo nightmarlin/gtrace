@@ -6,7 +6,7 @@ import { runCheck } from './src/checks'
 import { Config } from './src/configs'
 import { initGetHelp } from './src/getHelp'
 import { Command } from './src/helpers'
-import { leniencyHandler } from './src/leniencies'
+import { onBreakHandler } from './src/breaks'
 
 let commands: Command[] = [
   new Command(
@@ -16,10 +16,10 @@ let commands: Command[] = [
     runCheck
   ),
   new Command(
-    [`leniency`, `external`],
-    `Adds or removes a user or role from the external conditions leniency`,
-    `leniency <add / remove / get> <user id [optional on get]>`,
-    leniencyHandler
+    [`break`, `leniency`, `external`],
+    `Adds or removes a user's break status / get the current break status of a greeter or all greeters`,
+    `break <add / remove / get> <user id [optional on get]>`,
+    onBreakHandler
   ),
   new Command(
     [`ping`],
