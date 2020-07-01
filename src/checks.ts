@@ -1,6 +1,7 @@
 import * as djs from 'discord.js'
 import { Command, getMembersWithRole, checkMemberHasRoleIn } from './helpers'
 import { Config } from './configs'
+import { runFollowUps, FollowUpInfo } from './followups'
 
 export async function runCheck(params: string[], msg: djs.Message, cmd: Command, config: Config) {
 
@@ -58,7 +59,7 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
   let msgs: djs.Message[] = []
   for (const chan of greeterChannels) {
     console.log(`getting last ${config.limitInDays} days of messages in #${chan.name} [this may take some time]`)
-    msgs = [...msgs, ...await getLastWeekOfMessages(msg, chan, config)]
+    msgs = [...msgs, ...await getDaysOfMessages(msg, chan, config)]
   }
 
   console.log(`filtering...`);
@@ -79,25 +80,60 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
   }
 
   console.log(`generating report`)
+  let report = generateReport(outOfLimit, edgeOfLimit, greetersOnBreak, config)
   msg.channel.stopTyping()
-  msg.reply(generateReport(outOfLimit, edgeOfLimit, greetersOnBreak, config))
+  msg.reply(report.text)
     .catch(err => console.log(`unable to send report due to: ${err}`))
+
+  // Decide if follow up needed
+  if (report.followup) {
+
+    const filter = (m: djs.Message) => msg.author.id === m.author.id
+    msg.channel.awaitMessages(filter, { time: 30000, max: 1 })
+      .then(ms => {
+        let m = ms.array()[0]
+        if (m.content === `confirm`) {
+          // Run followups
+          console.log(`running follow-ups`)
+          m.reply(`Running follow-ups...`)
+            .catch(err => console.error(`unable to send follow up confirmation message due to: ${err}`))
+
+          let fui: FollowUpInfo = {
+            refDate: new Date(Date.now() - (config.limitInDays * 24 * 60 * 60 * 1000)),
+            toAlert: edgeOfLimit,
+            toRemove: outOfLimit,
+            replyTo: msg
+          }
+          runFollowUps(fui, config)
+        } else {
+          // Dont run follow ups
+          console.log(`not running follow ups`)
+          m.reply(`Follow-ups will not be run`)
+            .catch(err => console.error(`unable to send follow up cancellation message due to: ${err}`))
+        }
+      })
+  }
 
 }
 
-function generateReport(outOfLimit: djs.GuildMember[], edgeOfLimit: djs.GuildMember[], onBreak: djs.GuildMember[], config: Config): string {
+function generateReport(outOfLimit: djs.GuildMember[], edgeOfLimit: djs.GuildMember[], onBreak: djs.GuildMember[], config: Config): { text: string, followup: boolean } {
   let res = `**__Greeter Report - ${(new Date).toUTCString()}__**\n> *Using limit of ${config.limitInDays} days*\n\n`
 
   // Only add blocks when needed
-  res += outOfLimit.length > 0 ? genReportBlock(`Remove Greeter From`, arrToString(outOfLimit)) : ``
-  res += edgeOfLimit.length > 0 ? genReportBlock(`Warn For Next Round`, arrToString(edgeOfLimit)) : ``
-  res += onBreak.length > 0 ? genReportBlock(`Currently On Break`, arrToString(onBreak)) : ``
+  res += outOfLimit.length ? genReportBlock(`Remove Greeter From`, arrToString(outOfLimit)) : ``
+  res += edgeOfLimit.length ? genReportBlock(`Warn For Next Round`, arrToString(edgeOfLimit)) : ``
+  res += onBreak.length ? genReportBlock(`Currently On Break`, arrToString(onBreak)) : ``
 
-  res += (!outOfLimit && !edgeOfLimit && !onBreak)
-    ? `No greeters should be removed or warned. No greeters are on break`
+  res += (!(outOfLimit.length) && !(edgeOfLimit.length) && !(onBreak.length))
+    ? `No greeters should be removed or warned. No greeters are on break\n`
     : ``
 
-  return res
+  res += outOfLimit.length || edgeOfLimit.length
+    ? `If you'd like me to automatically follow up on this report, send \`confirm\` in the next 30 seconds, any other messages will cancel a follow-up`
+    : ``
+
+
+  return { text: res, followup: (outOfLimit.length !== 0 || edgeOfLimit.length !== 0) }
 }
 
 function arrToString(arr: djs.GuildMember[]): string {
@@ -119,13 +155,13 @@ async function getMessagesBeforeOldest(oldestMsg: djs.Message, channel: djs.Text
   return res.array()
 }
 
-async function getLastWeekOfMessages(msg: djs.Message, channel: djs.TextChannel, config: Config): Promise<djs.Message[]> {
+async function getDaysOfMessages(msg: djs.Message, channel: djs.TextChannel, config: Config): Promise<djs.Message[]> {
 
   let res: djs.Message[] = []
   // Set limit
-  let weekAgo: Date = new Date(Date.now() - (config.limitInDays * 24 * 60 * 60 * 1000))
+  let daysAgo: Date = new Date(Date.now() - (config.limitInDays * 24 * 60 * 60 * 1000))
 
-  while (!res.some(m => m.createdAt < weekAgo)) {
+  while (!res.some(m => m.createdAt < daysAgo)) {
     // Get messages before oldest msg
     let oldest: djs.Message = res.length === 0 ? msg : res[0]
     let incoming = await getMessagesBeforeOldest(oldest, channel)
