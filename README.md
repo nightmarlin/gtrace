@@ -20,7 +20,7 @@ Set up a local version by setting `config.json` and then run `yarn run go` - It'
 | prefix               | string   | Bot prefix                                              |
 | controlRole          | string   | ID of role allowed to use bot                           |
 | greeterRole          | string   | ID of role that identifies greeters                     |
-| leniencyRole         | string   | ID of role the identifies greeters on break             |
+| onBreakRole          | string   | ID of role the identifies greeters on break             |
 | greeterChannels      | string[] | Array of IDs of channels to measure greeter activity in |
 | exceptionRoles       | string[] | Array of roles to ignore in checks                      |
 | exceptionUsers       | string[] | Array of users to ignore in checks                      |
