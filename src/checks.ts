@@ -117,7 +117,7 @@ export async function runCheck(params: string[], msg: djs.Message, cmd: Command,
 }
 
 function generateReport(outOfLimit: djs.GuildMember[], edgeOfLimit: djs.GuildMember[], onBreak: djs.GuildMember[], config: Config): { text: string, followup: boolean } {
-  let res = `**__greeter report - ${(new Date).toUTCString()}__**\n> *using limit of ${config.limitInDays} days*\n\n`
+  let res = `**__greeter report - ${(new Date).toUTCString().toLowerCase()}__**\n> *using limit of ${config.limitInDays} days*\n\n`
 
   // Only add blocks when needed
   res += outOfLimit.length ? genReportBlock(`remove greeter from`, arrToString(outOfLimit)) : ``
