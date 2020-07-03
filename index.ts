@@ -47,7 +47,7 @@ async function messageHandler(msg: djs.Message) {
   }
 
   // If message mentions bot, respond with prefix
-  if (msg.mentions.members.has(msg.client.user.id)) {
+  if (msg?.mentions?.members?.has(msg.client.user.id)) {
     let authorised = msg.guild.members.resolve(msg.author.id).roles.cache.has(config.controlRole)
     msg.reply(`hi there! my prefix is \`${config.prefix}\`${
       authorised ? `` : ` - but you can't use me as you dont have my management role!`
@@ -57,7 +57,7 @@ async function messageHandler(msg: djs.Message) {
   }
 
   // Check prefix
-  if (!msg.content.startsWith(config.prefix)) {
+  if (!msg.content?.startsWith(config.prefix)) {
     return
   }
   console.log(`handling message > ${msg.content}`);
@@ -109,7 +109,7 @@ function main() {
   // Connectify
   let client = new djs.Client({ ws: { intents: djs.Intents.ALL } });
   client.once('ready', () => {
-    console.log(`gtrace Ready!`)
+    console.log(`gtrace ready!`)
     console.log(`invite me using 'https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=268504064'`)
 
     let pd: djs.PresenceData = {

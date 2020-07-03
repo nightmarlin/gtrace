@@ -49,7 +49,7 @@ async function runAlert(g: djs.GuildMember, refDate: Date, config: Config) {
  */
 function generateText(g: djs.GuildMember, removeOrAlert: Boolean, refDate: Date, config: Config): string {
   let res = `hello ${g.user.username}!
-your last greet in **${g.guild.name}** was ${removeOrAlert ? `before` : `just after`} ${refDate.getFullYear()}-${refDate.getMonth()}-${refDate.getDate()}\n`
+your last greet in **${g.guild.name}** was ${removeOrAlert ? `before` : `just after`} ${refDate.getFullYear()}-${refDate.getMonth() + 1}-${refDate.getDate()}\n`
 
   if (removeOrAlert) {
     res += `as such, we have removed the role from you, but feel free to ask for it back if you feel you'll be more active!\n`
