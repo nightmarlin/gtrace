@@ -1,80 +1,78 @@
-import * as fs from 'fs'
+import * as fs from "fs";
 
-export type UserOrRole = 'user' | 'role'
+export type UserOrRole = "user" | "role";
 
 // Config typings - singleton pattern
 export class Config {
+  private static instance: Config = null;
+  static configPath: string = "../config.json";
 
-  private static instance: Config = null
-  static configPath: string = "../config.json"
-
-  private constructor() { }
+  private constructor() {}
 
   // Safely load config file into program
   private static load() {
-    Config.instance = new Config()
-    let c: ConfigSaveable = require(Config.configPath)
-    Config.instance.token = c.token
-    Config.instance.prefix = c.prefix
-    Config.instance.greeterRole = c.greeterRole
-    Config.instance.onBreakRole = c.onBreakRole
-    Config.instance.greeterChannels = c.greeterChannels
-    Config.instance.exceptionRoles = c.exceptionRoles
-    Config.instance.exceptionUsers = c.exceptionUsers
-    Config.instance.controlRole = c.controlRole
-    Config.instance.limitInDays = c.limitInDays
-    Config.instance.shouldTryToEditRoles = c.shouldTryToEditRoles
-
+    Config.instance = new Config();
+    let c: ConfigSaveable = require(Config.configPath);
+    Config.instance.token = c.token;
+    Config.instance.prefix = c.prefix;
+    Config.instance.greeterRole = c.greeterRole;
+    Config.instance.onBreakRole = c.onBreakRole;
+    Config.instance.greeterChannels = c.greeterChannels;
+    Config.instance.exceptionRoles = c.exceptionRoles;
+    Config.instance.exceptionUsers = c.exceptionUsers;
+    Config.instance.controlRole = c.controlRole;
+    Config.instance.limitInDays = c.limitInDays;
+    Config.instance.shouldTryToEditRoles = c.shouldTryToEditRoles;
   }
 
   static getInstance(): Config {
     if (!Config.instance) {
-      Config.load()
+      Config.load();
     }
     // console.log(Config.instance)
-    return Config.instance
+    return Config.instance;
   }
 
   /**
    * The bot user token
    */
-  token: string
+  token: string;
   /**
    * The configured bot prefix
    */
-  prefix: string
+  prefix: string;
   /**
    * The bot management role
    */
-  controlRole: string
+  controlRole: string;
   /**
    * The greeter role id
    */
-  greeterRole: string
+  greeterRole: string;
   /**
    * The leniency role id - added to greeters we're making exceptions for
    */
-  onBreakRole: string
+  onBreakRole: string;
   /**
    * The list of channels greeter activity should be checked in
    */
-  greeterChannels: string[]
+  greeterChannels: string[];
   /**
    * A list of roles the bot should override the checks on
    */
-  exceptionRoles: string[]
+  exceptionRoles: string[];
   /**
    * A list of users the bot should override the checks on
    */
-  exceptionUsers: string[]
+  exceptionUsers: string[];
   /**
    * How many days should be parsed before declared inactive
    */
-  limitInDays: number
+  limitInDays: number;
   /**
    * Whether the bot should attempt to edit roles itself (for leniencies)
    */
-  shouldTryToEditRoles: boolean
+  shouldTryToEditRoles: boolean;
 
   /**
    * Removes an exception and saves saves the config to the file
@@ -83,9 +81,9 @@ export class Config {
    */
   removeException(id: string, which: UserOrRole) {
     if (which === "user" && this.exceptionUsers.includes(id)) {
-      this.exceptionUsers.filter(uid => uid !== id)
+      this.exceptionUsers.filter((uid) => uid !== id);
     } else if (this.exceptionRoles.includes(id)) {
-      this.exceptionRoles.filter(rid => rid !== id)
+      this.exceptionRoles.filter((rid) => rid !== id);
     }
   }
 
@@ -96,26 +94,25 @@ export class Config {
    */
   addException(id: string, which: UserOrRole) {
     if (which === "user" && !this.exceptionUsers.includes(id)) {
-      this.exceptionUsers.push(id)
+      this.exceptionUsers.push(id);
     } else if (!this.exceptionRoles.includes(id)) {
-      this.exceptionRoles.push(id)
+      this.exceptionRoles.push(id);
     }
   }
-
 }
 
 /**
  * Describes the shape of the config file
  */
 interface ConfigSaveable {
-  token: string
-  prefix: string
-  controlRole: string
-  greeterRole: string
-  onBreakRole: string
-  greeterChannels: string[]
-  exceptionRoles: string[]
-  exceptionUsers: string[]
-  limitInDays: number
-  shouldTryToEditRoles: boolean
+  token: string;
+  prefix: string;
+  controlRole: string;
+  greeterRole: string;
+  onBreakRole: string;
+  greeterChannels: string[];
+  exceptionRoles: string[];
+  exceptionUsers: string[];
+  limitInDays: number;
+  shouldTryToEditRoles: boolean;
 }

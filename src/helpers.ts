@@ -1,29 +1,34 @@
-import * as djs from 'discord.js'
+import * as djs from "discord.js";
 
-import { Config } from './configs'
+import { Config } from "./configs";
 
 /**
  * Defines the method signature of a command handler
  */
-export type CommandHandler = (params: string[], msg: djs.Message, cmd: Command, config: Config) => void
+export type CommandHandler = (
+  params: string[],
+  msg: djs.Message,
+  cmd: Command,
+  config: Config
+) => void;
 
 export class Command {
   /**
    *  Name(s) of the command
    */
-  names: string[]
+  names: string[];
   /**
    *  The command description
    */
-  description: string
+  description: string;
   /**
    *  How to use the command
    */
-  usage: string
+  usage: string;
   /**
    *  Command handler function
    */
-  handler: CommandHandler
+  handler: CommandHandler;
 
   /**
    * CTOR
@@ -32,37 +37,48 @@ export class Command {
    * @param usage How to use the command
    * @param handler The function to call to handle the command
    */
-  constructor(names: string[], description: string, usage: string, handler: CommandHandler) {
-    this.names = names
-    this.description = description
-    this.usage = usage
-    this.handler = handler
+  constructor(
+    names: string[],
+    description: string,
+    usage: string,
+    handler: CommandHandler
+  ) {
+    this.names = names;
+    this.description = description;
+    this.usage = usage;
+    this.handler = handler;
   }
 }
 
-export function checkMemberHasRoleIn(member: djs.GuildMember, roles: string[]): Boolean {
+export function checkMemberHasRoleIn(
+  member: djs.GuildMember,
+  roles: string[]
+): Boolean {
   for (const r of roles) {
     if (member.roles.cache.has(r)) {
-      return true
+      return true;
     }
   }
-  return false
+  return false;
 }
 
-export function getMembersWithRole(id: string, guild: djs.Guild): djs.GuildMember[] {
-  let res: djs.GuildMember[] = []
+export function getMembersWithRole(
+  id: string,
+  guild: djs.Guild
+): djs.GuildMember[] {
+  let res: djs.GuildMember[] = [];
   for (const m of guild.roles.resolve(id).members.array()) {
     if (m) {
-      res.push(m)
+      res.push(m);
     }
   }
-  return res
+  return res;
 }
 
 /**
  * Defines the role/user/inavlid result type
  */
-export type RoleUserUnion = `role` | `user`
+export type RoleUserUnion = `role` | `user`;
 
 /**
  * Checks if the id given is a valid user or role ID - retunrs undefined if neither
@@ -70,17 +86,17 @@ export type RoleUserUnion = `role` | `user`
  */
 export function getIfRoleOrUser(id: string, guild: djs.Guild): RoleUserUnion {
   if (guild.roles.resolve(id)) {
-    return 'role'
+    return "role";
   } else if (guild.members.resolve(id)) {
-    return 'user'
+    return "user";
   }
-  return undefined
+  return undefined;
 }
 
 /**
  * Defines the role/user/inavlid result type
  */
-export type AddRemoveUnion = `add` | `remove`
+export type AddRemoveUnion = `add` | `remove`;
 
 /**
  * Checks if the value given is one of "add" or "remove"
@@ -88,9 +104,9 @@ export type AddRemoveUnion = `add` | `remove`
  */
 export function getIfAddOrRemove(toCheck: string): AddRemoveUnion {
   if (toCheck === `add` || toCheck === `remove`) {
-    return toCheck
+    return toCheck;
   }
-  return undefined
+  return undefined;
 }
 
 /**
@@ -99,9 +115,18 @@ export function getIfAddOrRemove(toCheck: string): AddRemoveUnion {
  * @param cmd The calling command
  * @param n The number of parameters this command accepts
  */
-export function sendBadRequestMessage(msg: djs.Message, cmd: Command, n: Number) {
-  msg.reply(`${cmd.names[0]} takes ${n} parameters, usage: ${cmd.usage}`)
-    .catch(err => console.log(`unable to send bad request message for ${cmd.names[0]} due to: ${err}`))
+export function sendBadRequestMessage(
+  msg: djs.Message,
+  cmd: Command,
+  n: Number
+) {
+  msg
+    .reply(`${cmd.names[0]} takes ${n} parameters, usage: ${cmd.usage}`)
+    .catch((err) =>
+      console.log(
+        `unable to send bad request message for ${cmd.names[0]} due to: ${err}`
+      )
+    );
 }
 
 /**
@@ -110,19 +135,26 @@ export function sendBadRequestMessage(msg: djs.Message, cmd: Command, n: Number)
  * @param rId Role id to add to user
  * @param guild Guild to perform operation in
  */
-export async function addRole(uId: string, rId: string, guild: djs.Guild): Promise<Boolean> {
-  let r = guild.roles.resolve(rId)
-  let m = guild.members.resolve(uId)
+export async function addRole(
+  uId: string,
+  rId: string,
+  guild: djs.Guild
+): Promise<Boolean> {
+  let r = guild.roles.resolve(rId);
+  let m = guild.members.resolve(uId);
   if (r && m && !m.roles.cache.has(rId)) {
-    let res = m.roles.add(r, 'role granted for greeter tracing')
-      .then(_ => true)
-      .catch(err => {
-        console.log(`unable to add role ${r.name} to user ${m.user.username} due to ${err}`)
-        return false
-      })
-    return res
+    let res = m.roles
+      .add(r, "role granted for greeter tracing")
+      .then((_) => true)
+      .catch((err) => {
+        console.log(
+          `unable to add role ${r.name} to user ${m.user.username} due to ${err}`
+        );
+        return false;
+      });
+    return res;
   }
-  return false
+  return false;
 }
 
 /**
@@ -131,17 +163,24 @@ export async function addRole(uId: string, rId: string, guild: djs.Guild): Promi
  * @param rId Role id to remove from user
  * @param guild Guild to perform operation in
  */
-export async function removeRole(uId: string, rId: string, guild: djs.Guild): Promise<Boolean> {
-  let r = guild.roles.resolve(rId)
-  let m = guild.members.resolve(uId)
+export async function removeRole(
+  uId: string,
+  rId: string,
+  guild: djs.Guild
+): Promise<Boolean> {
+  let r = guild.roles.resolve(rId);
+  let m = guild.members.resolve(uId);
   if (r && m && m.roles.cache.has(rId)) {
-    let res = m.roles.remove(r, 'role removed for greeter tracing')
-      .then(_ => true)
-      .catch(err => {
-        console.log(`unable to remove role ${r.name} from user ${m.user.username} due to ${err}`)
-        return false
-      })
-    return res
+    let res = m.roles
+      .remove(r, "role removed for greeter tracing")
+      .then((_) => true)
+      .catch((err) => {
+        console.log(
+          `unable to remove role ${r.name} from user ${m.user.username} due to ${err}`
+        );
+        return false;
+      });
+    return res;
   }
   return false;
 }
