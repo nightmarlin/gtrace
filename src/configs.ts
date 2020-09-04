@@ -16,7 +16,7 @@ export class Config {
     Config.instance.token = c.token;
     Config.instance.prefix = c.prefix;
     Config.instance.greeterRole = c.greeterRole;
-    Config.instance.onBreakRole = c.onBreakRole;
+    Config.instance.leniencyRole = c.leniencyRole;
     Config.instance.greeterChannels = c.greeterChannels;
     Config.instance.exceptionRoles = c.exceptionRoles;
     Config.instance.exceptionUsers = c.exceptionUsers;
@@ -52,7 +52,7 @@ export class Config {
   /**
    * The leniency role id - added to greeters we're making exceptions for
    */
-  onBreakRole: string;
+  leniencyRole: string;
   /**
    * The list of channels greeter activity should be checked in
    */
@@ -109,7 +109,7 @@ interface ConfigSaveable {
   prefix: string;
   controlRole: string;
   greeterRole: string;
-  onBreakRole: string;
+  leniencyRole: string;
   greeterChannels: string[];
   exceptionRoles: string[];
   exceptionUsers: string[];

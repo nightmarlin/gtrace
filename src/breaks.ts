@@ -26,7 +26,7 @@ export async function onBreakHandler(
       // If user specified, get user break status
       let u = msg.guild.members.resolve(params[2]);
       msgTxt = `**${u.user.username}#${u.user.discriminator}** is ${
-        u.roles.cache.has(config.onBreakRole) ? "" : "not"
+        u.roles.cache.has(config.leniencyRole) ? "" : "not"
       } currently on break`;
     } else {
       // Else get status of all users on break
@@ -56,7 +56,7 @@ export async function onBreakHandler(
     msg
       .reply(
         `adding and removing breaks has been disabled - ` +
-          `try setting <@&${config.onBreakRole}> with another bot or doing it manually`,
+          `try setting <@&${config.leniencyRole}> with another bot or doing it manually`,
         { allowedMentions: { parse: ["users"] } }
       )
       .catch((err) =>
@@ -97,7 +97,7 @@ export async function onBreakHandler(
 }
 
 function findUsersOnBreak(msg: djs.Message, config: Config): djs.GuildMember[] {
-  return getMembersWithRole(config.onBreakRole, msg.guild);
+  return getMembersWithRole(config.leniencyRole, msg.guild);
 }
 
 function sendSuccess(msg: djs.Message, id: string) {
@@ -125,7 +125,7 @@ async function addUserOnBreak(
   msg: djs.Message,
   config: Config
 ): Promise<Boolean> {
-  return addRole(userId, config.onBreakRole, msg.guild);
+  return addRole(userId, config.leniencyRole, msg.guild);
 }
 
 async function removeUserFromBreak(
@@ -133,5 +133,5 @@ async function removeUserFromBreak(
   msg: djs.Message,
   config: Config
 ): Promise<Boolean> {
-  return removeRole(userId, config.onBreakRole, msg.guild);
+  return removeRole(userId, config.leniencyRole, msg.guild);
 }

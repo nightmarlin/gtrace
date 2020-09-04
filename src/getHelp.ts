@@ -23,7 +23,7 @@ export function initGetHelp(commands: Command[]) {
     // Header and config deets
     let msgText = `***gtrace help page***\n> see the source at \`https://github.com/Nightmarlin/gtrace\`
 **limit:** ${config.limitInDays} days | **control role:** <@&${config.controlRole}>
-**greeter role:** <@&${config.greeterRole}> | **on-break role:** <@&${config.onBreakRole}>
+**greeter role:** <@&${config.greeterRole}> | **leniency role:** <@&${config.leniencyRole}>
 **should manage breaks:** ${config.shouldTryToEditRoles} | **exceptions:** ${config.exceptionUsers.length} user(s), ${config.exceptionRoles.length} role(s)\n`;
 
     // append cmd data to array

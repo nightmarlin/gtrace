@@ -60,10 +60,10 @@ export async function runCheck(
     if (
       !config.exceptionUsers.includes(g.id) && // User is not config excluded by id
       !checkMemberHasRoleIn(g, config.exceptionRoles) && // User is not config excluded by role
-      !g.roles.cache.has(config.onBreakRole) // User is not on leniency
+      !g.roles.cache.has(config.leniencyRole) // User is not on leniency
     ) {
       greetersToCheck.push(g);
-    } else if (g.roles.cache.has(config.onBreakRole)) {
+    } else if (g.roles.cache.has(config.leniencyRole)) {
       greetersOnBreak.push(g);
     }
   }
