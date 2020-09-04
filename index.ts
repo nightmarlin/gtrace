@@ -73,14 +73,15 @@ async function messageHandler(msg: djs.Message) {
   console.log(`handling message > ${msg.content}`);
 
   // Check if DM
-  if (msg.channel.type !== `text`) {
+  if (msg.channel.type === `dm`) {
+    console.log(`this message is a dm from ${msg.author.id}`);
     msg
       .reply(
         `i can only be used in our mutual server... try summoning me there!!`
       )
       .catch((err) =>
         console.log(
-          `unable to respond to dm from ${msg.author.username} (${msg.author.id}) due to: $err`
+          `unable to respond to dm from ${msg.author.username} (${msg.author.id}) due to: ${err}`
         )
       );
     return;
@@ -139,7 +140,7 @@ function main() {
 
     let pd: djs.PresenceData = {
       activity: {
-        name: "the greeter team!",
+        name: `the greeter team! (${config.prefix})`,
         type: "WATCHING",
         url: "https://github.com/Nightmarlin/gtrace",
       },
