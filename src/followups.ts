@@ -75,7 +75,8 @@ your last greet in **${g.guild.name}** was ${
     res += `as this is on the edge of the ${config.limitInDays} day limit, the role has not been removed. just consider this to be a head's up!!\n`;
   }
 
-  res += `> this was an automated message - please contact Marlin if you have any questions!`;
+  res += `> this was an automated message - if you have any questions please contact server staff!`;
+
   return res;
 }
 
